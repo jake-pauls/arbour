@@ -7,8 +7,8 @@ workspace "vol"
     objdir "%{wks.location}/%{prj.name}/Build/Intermediates/%{cfg.buildcfg}"
 
 	files {
-		"%{prj.name}/Source/**.cpp",
-		"%{prj.name}/Source/**.h"
+		"%{prj.name}/**.cpp",
+		"%{prj.name}/**.h"
 	}
 
 	vpaths { 
