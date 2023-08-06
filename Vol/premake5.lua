@@ -7,8 +7,6 @@ project "Vol"
 	pchheader "volpch.h"
 	pchsource "volpch.cpp"
 
-	buildoptions { "/FI volpch.h" }
-
 	vpaths {
 		["PCH/*"] = { "**pch.h", "**pch.cpp" },
 		["Code/**"] = { "Source/**.h", "Source/**.cpp" },
@@ -18,3 +16,14 @@ project "Vol"
 		"%{prj.location}/Source",
 		"%{prj.location}"
 	}
+
+	filter "system:Windows"
+		-- Force include the PCH on MSVC
+		buildoptions { "/FI volpch.h" }
+
+		links { 
+			"d3d12", 
+			"dxgi", 
+			"d3dcompiler" 
+		}
+	filter {}

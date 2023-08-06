@@ -1,15 +1,20 @@
-#include "Application.h"
+#include "Win32Application.h"
 
 #if WIN32
 _Use_decl_annotations_
-int WINAPI WinMain(_In_ HINSTANCE HwndInstance, _In_opt_ HINSTANCE HwndPrevInstance, _In_ LPSTR LpCmdLine, _In_ int NShowCmd)
+int WINAPI WinMain(HINSTANCE HInstance, HINSTANCE HPrevInstance, LPSTR LpCmdLine, int NCmdShow)
 {
-    const Application* VolApplication = new Application();
-    is(VolApplication);
+    const Win32Application* App = new Win32Application();
+    is(App);
 
-    VolApplication->Run();
-    delete VolApplication;
+    int Result = App->Run(HInstance, NCmdShow);
+    delete App;
 
-    return 0;
+    return Result;
+}
+#else
+int main(int Argc, char* Argv[])
+{ 
+    return 0; 
 }
 #endif

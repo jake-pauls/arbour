@@ -1,4 +1,4 @@
 # 😶‍🌫️
 ```
-$ .\Generate.bat /C
+$ .\Generate /C
 ```
