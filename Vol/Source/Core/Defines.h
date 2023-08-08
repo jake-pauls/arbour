@@ -51,9 +51,13 @@ constexpr char const* LogLevelError{ "ERROR" };
 #if VOL_DEBUG
 	#if WIN32
 		// todo: find an alternate method with soft buffer maximum
-		#define __VS_PRINT__(Fmt, ...) char Str[DefinesPrivate::VsPrintSize]; \
-				sprintf_s(Str, sizeof(Str), Fmt, __VA_ARGS__);			      \
-				OutputDebugStringA(Str);
+		#define __VS_PRINT__(Fmt, ...) \
+		{ \
+			char Str[DefinesPrivate::VsPrintSize]; \
+			sprintf_s(Str, sizeof(Str), Fmt, __VA_ARGS__); \
+			OutputDebugStringA(Str); \
+		} \
+
 		#define __PRINT__(Fmt, ...) fprintf(stdout, Fmt, __VA_ARGS__); __VS_PRINT__(Fmt, __VA_ARGS__)
 	#else
 		#define __PRINT__(Fmt, ...) fprintf(stdout, Fmt, __VA_ARGS__); 
@@ -72,10 +76,40 @@ constexpr char const* LogLevelError{ "ERROR" };
 #endif
 
 #if VOL_DEBUG
+	/**
+	 * Wrapper for a generic platform assert, causes a crashe if provided check is failed.
+	 */
 	#define is(Check) assert(Check)
-	#define verify(Check) { if (!(Check)) { VOL_ERROR(#Check); DEBUGBREAK(); } }
-	// todo: allow in conditions
-	#define verifyf(Check, Message, ...) { if (!(Check)) { VOL_ERROR(Message, __VA_ARGS__); DEBUGBREAK(); } }
+
+	/**
+	 * Cool trick inspired by how UE tackles boolean-ish assert checking.
+	 * https://github.com/EpicGames/UnrealEngine/blob/release/Engine/Source/Runtime/Core/Public/Misc/AssertionMacros.h
+	 */
+	#define __VERIFY_LAMBDA__(Capture, Check, Message, ...) \
+		[Capture]() -> bool { \
+			if (!(Check)) \
+			{ \
+				VOL_ERROR(Message, ## __VA_ARGS__); DEBUGBREAK(); \
+				return false; \
+			} \
+			return true; \
+		}() \
+
+	/**
+	 * Similar to `ensure` in UE, `verify` permits conditioning to check if an assert is true.
+	 * 
+	 *		if (verify(Object.BoolProperty))
+	 *      {
+	 *			// Do something with this object's bool property
+	 *      }
+	 *
+	 * Unlike `is`, `verify` will execute a debug break in debug builds and continue execution of the running program.
+	 */
+	#define verify(Check) __VERIFY_LAMBDA__(, Check, #Check)
+	/**
+	 * @see verify(...)
+	 */
+	#define verifyf(Check, Message, ...) __VERIFY_LAMBDA__(&, Check, Message, ## __VA_ARGS__)
 #else 
 	#define verify(Check) 
 	#define verifyf(Check, Message, ...)

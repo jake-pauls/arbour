@@ -14,14 +14,14 @@ using UniquePtr = std::unique_ptr<Type>;
 /**
  * @brief Alias for `std::make_unique` that forwards all variadic arguments.
  * @tparam Type Type associated with the unique pointer
- * @tparam ...Args Types for the variadic arguments forwarded into the pointer's construction
+ * @tparam ...ArgTypes Types for the variadic arguments forwarded into the pointer's construction
  * @param ...args Values for the variadic arguments forwarded into the pointer's construction
  * @return Constructed unique pointer
  */
-template<typename Type, typename... Args>
-constexpr UniquePtr<Type> MakeUnique(Args... args)
+template<typename Type, typename... ArgTypes>
+constexpr UniquePtr<Type> MakeUnique(ArgTypes... args)
 {
-	return std::make_unique<Type>(std::forward<Args>(args)...);
+	return std::make_unique<Type>(std::forward<ArgTypes>(args)...);
 }
 
 /**

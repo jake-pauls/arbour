@@ -23,7 +23,7 @@ void D3D12Renderer::InitPipelines() const
 	// Enable debug mode for D3D12
 	{
 		ID3D12Debug* DebugController;
-		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&DebugController))))
+		if (DX_CALL_SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&DebugController))))
 		{
 			DebugController->EnableDebugLayer();
 			DxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
@@ -51,10 +51,10 @@ void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** A
 	IDXGIAdapter1* Adapter1 = nullptr;
 	IDXGIFactory6* Factory6 = nullptr;
 	
-	if (SUCCEEDED(Factory->QueryInterface(IID_PPV_ARGS(&Factory6))))
+	if (DX_CALL_SUCCEEDED(Factory->QueryInterface(IID_PPV_ARGS(&Factory6))))
 	{
 		for (uint32_t Index = 0; 
-			SUCCEEDED(Factory6->EnumAdapterByGpuPreference(Index,
+			DX_CALL_SUCCEEDED(Factory6->EnumAdapterByGpuPreference(Index,
 				bRequestHighPerformanceAdapter ? DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE : DXGI_GPU_PREFERENCE_UNSPECIFIED,
 				IID_PPV_ARGS(&Adapter1))); 
 			++Index)
@@ -71,7 +71,7 @@ void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** A
 			}
 
 			// Check to see if the device supports Direct3D 12
-			if (SUCCEEDED(D3D12CreateDevice(Adapter1, D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+			if (DX_CALL_SUCCEEDED(D3D12CreateDevice(Adapter1, D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
 			{
 				break;
 			}
@@ -80,7 +80,7 @@ void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** A
 
 	if (!Adapter1)
 	{
-		for (uint32_t Index = 0; SUCCEEDED(Factory->EnumAdapters1(Index, &Adapter1)); ++Index)
+		for (uint32_t Index = 0; DX_CALL_SUCCEEDED(Factory->EnumAdapters1(Index, &Adapter1)); ++Index)
 		{
 			DXGI_ADAPTER_DESC1 Desc;
 			Adapter1->GetDesc1(&Desc);
@@ -93,7 +93,7 @@ void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** A
 			}
 
 			// Check to see if the device supports Direct3D 12
-			if (SUCCEEDED(D3D12CreateDevice(Adapter1, D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+			if (DX_CALL_SUCCEEDED(D3D12CreateDevice(Adapter1, D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
 			{
 				break;
 			}
