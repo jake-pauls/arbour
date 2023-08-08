@@ -12,4 +12,15 @@ public:
 	 * @param NCmdShow Display code for the window being spawned
 	 */
 	int Run(HINSTANCE HInstance, int NCmdShow) const;
+
+	/**
+	 * @brief Retrieves the static window handle saved for this application.
+	*/
+	FORCEINLINE static constexpr const HWND& GetWindowHandle() 
+	{ 
+		return WindowHandle; 
+	};
+
+private:
+	static HWND WindowHandle;
 };

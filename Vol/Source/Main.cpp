@@ -1,6 +1,6 @@
 #include "Windows/Win32Application.h"
 
-#if WIN32
+#ifdef WIN32
 _Use_decl_annotations_
 int WINAPI WinMain(HINSTANCE HInstance, HINSTANCE HPrevInstance, LPSTR LpCmdLine, int NCmdShow)
 {

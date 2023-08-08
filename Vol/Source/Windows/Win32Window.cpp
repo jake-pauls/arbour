@@ -1,7 +1,5 @@
 #include "Win32Window.h"
 
-HWND Win32Window::Hwnd{ nullptr };
-
 namespace Win32WindowPrivate
 {
 // Handle for the currently running instance, this shouldn't be used anywhere else
@@ -11,7 +9,7 @@ HINSTANCE HInstance{ nullptr };
 constexpr wchar_t const* WindowClassName = TEXT("VolDX12");
 }
 
-void Win32Window::Init(HINSTANCE HInstance, int NCmdShow, const wchar_t* Title) const
+void Win32Window::Init(HINSTANCE HInstance, int NCmdShow, const wchar_t* Title)
 {
 	Win32WindowPrivate::HInstance = HInstance;
 
@@ -51,7 +49,7 @@ void Win32Window::Peek(LPMSG Msg) const
 	}
 }
 
-void Win32Window::Destroy() const
+void Win32Window::Destroy()
 {
 	DestroyWindow(Hwnd);
 	Hwnd = nullptr;

@@ -2,6 +2,10 @@
 
 #include <memory>
 
+#ifdef WIN32
+#include <wrl/client.h>
+#endif
+
 namespace Core
 {
 /**
@@ -34,13 +38,24 @@ using SharedPtr = std::shared_ptr<Type>;
 /**
  * @brief Alias for `std::make_shared` that forwards all variadic arguments.
  * @tparam Type Type associated with the shared pointer
- * @tparam ...Args Types for the variadic arguments forwarded into the pointer's construction
+ * @tparam ...ArgTypes Types for the variadic arguments forwarded into the pointer's construction
  * @param ...args Values for the variadic arguments forwarded into the pointer's construction
  * @return Constructed shared pointer
  */
-template<typename Type, typename... Args>
-constexpr SharedPtr<Type> MakeShared(Args... args)
+template<typename Type, typename... ArgTypes>
+constexpr SharedPtr<Type> MakeShared(ArgTypes... args)
 {
-	return std::make_shared<Type>(std::forward<Args>(args)...);
+	return std::make_shared<Type>(std::forward<ArgTypes>(args)...);
 }
+
+#ifdef WIN32
+/**
+ * @brief Alias for the use of `Microsoft::WRL::ComPtr`
+ * @tparam Type Templated type argument for the ComPtr
+ * @note For more information on the use and recommendation of ComPtr in UWP/Win32 applications, 
+ *       refer to: https://github.com/Microsoft/DirectXTK/wiki/ComPtr
+*/
+template<typename Type>
+using ComPtr = Microsoft::WRL::ComPtr<Type>;
+#endif
 }

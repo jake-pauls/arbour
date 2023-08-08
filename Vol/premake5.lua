@@ -37,6 +37,7 @@ project "Vol"
 		links { 
 			"d3d12", 
 			"dxgi", 
+			"dxguid", -- DXGI_DEBUG flags
 			"d3dcompiler" 
 		}
 	filter {}

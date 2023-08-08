@@ -6,8 +6,8 @@
 
 namespace DefinesPrivate
 {
-#if VOL_DEBUG 
-#if WIN32
+#ifdef VOL_DEBUG 
+#ifdef WIN32
 // Size of the buffer allocated to print into Visual Studio's output window
 constexpr int VsPrintSize{ 256 };
 #endif
@@ -29,8 +29,8 @@ constexpr char const* LogLevelError{ "ERROR" };
 #define __FILE_NAME__ std::filesystem::path(__FILE__).filename().string()
 #define __FILE_NAME_C_STR__ std::filesystem::path(__FILE__).filename().string().c_str()
 
-#if VOL_DEBUG
-	#if WIN32
+#ifdef VOL_DEBUG
+	#ifdef WIN32
 		#define DEBUGBREAK() __debugbreak()
 	#else
 		#include <signal.h>
@@ -40,16 +40,16 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#define DEBUGBREAK()
 #endif
 
-#if VOL_DEBUG
-	#if WIN32
+#ifdef VOL_DEBUG
+	#ifdef WIN32
 		#include <assert.h>
 	#else
 		#include <cassert>
 	#endif
 #endif
 
-#if VOL_DEBUG
-	#if WIN32
+#ifdef VOL_DEBUG
+	#ifdef WIN32
 		// todo: find an alternate method with soft buffer maximum
 		#define __VS_PRINT__(Fmt, ...) \
 		{ \
@@ -75,7 +75,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#define VOL_ERROR(Message, ...)
 #endif
 
-#if VOL_DEBUG
+#ifdef VOL_DEBUG
 	/**
 	 * Wrapper for a generic platform assert, causes a crashe if provided check is failed.
 	 */

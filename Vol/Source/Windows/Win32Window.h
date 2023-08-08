@@ -12,7 +12,7 @@ public:
 	 * @param NCmdShow Display code for the window being spawned
 	 * @param Title Title for the Win32 window
 	 */
-	void Init(HINSTANCE HInstance, int NCmdShow, const wchar_t* Title = TEXT("Win32 Application")) const;
+	void Init(HINSTANCE HInstance, int NCmdShow, const wchar_t* Title = TEXT("Win32 Application"));
 
 	/**
 	 * @brief Peeks the next message in the command queue.
@@ -23,16 +23,19 @@ public:
 	/**
 	 * @brief Destroys the active window.
 	 */
-	void Destroy() const;
-
+	void Destroy();
+ 
 	/**
-	 * @brief Retrieves the static window handle for the application.
+	 * @brief Retrieves the Win32 handle for this window.
 	 */
-	constexpr static FORCEINLINE HWND GetHWND() { return Hwnd; }
+	FORCEINLINE constexpr const HWND& GetHWND() 
+	{ 
+		return Hwnd; 
+	}
 
 protected:
 	static LRESULT CALLBACK WindowProc(HWND Hwnd, UINT Message, WPARAM WParam, LPARAM LParam);
 
 private:
-	static HWND Hwnd;
+	HWND Hwnd;
 };
