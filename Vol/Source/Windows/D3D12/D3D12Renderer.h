@@ -33,4 +33,5 @@ private:
 	void GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** Adapter, bool bRequestHighPerformanceAdapter = false) const;
 
 	ID3D12Device* Device{ nullptr };
+	ID3D12CommandQueue* CommandQueue{ nullptr };
 };

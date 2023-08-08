@@ -31,17 +31,20 @@ void D3D12Renderer::InitPipelines() const
 	}
 #endif
 
+	// Factory
 	IDXGIFactory4* Factory;
 	DX_CALL(CreateDXGIFactory2(DxgiFactoryFlags, IID_PPV_ARGS(&Factory)));
 
+	// Device
 	// todo: add warp adapter? 
 	// https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp
-
-	IDXGIAdapter1* HardwareAdapter;
-	GetHardwareAdapter(Factory, &HardwareAdapter);
-	// todo: remove this const_cast
-	DX_CALL(D3D12CreateDevice(HardwareAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(const_cast<ID3D12Device**>(&Device))));
-	is(Device);
+	{
+		IDXGIAdapter1* HardwareAdapter;
+		GetHardwareAdapter(Factory, &HardwareAdapter);
+		// todo: remove this const_cast
+		DX_CALL(D3D12CreateDevice(HardwareAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(const_cast<ID3D12Device**>(&Device))));
+		is(Device);
+	}
 }
 
 void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** Adapter, bool bRequestHighPerformanceAdapter) const

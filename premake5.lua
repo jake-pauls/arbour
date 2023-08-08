@@ -6,11 +6,6 @@ workspace "vol"
     targetdir "%{wks.location}/%{prj.name}/Build/Bin/%{cfg.buildcfg}"
     objdir "%{wks.location}/%{prj.name}/Build/Intermediates/%{cfg.buildcfg}"
 
-	files {
-		"%{prj.name}/**.cpp",
-		"%{prj.name}/**.h"
-	}
-
 	vpaths { 
 		["./"] = { "**premake5.lua" } 
 	}
