@@ -1,11 +1,11 @@
-project "Vol"
+project "Arbor"
 	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++20"
-	location "%{wks.location}/Vol"
+	location "%{wks.location}/Arbor"
 
-	pchheader "volpch.h"
-	pchsource "volpch.cpp"
+	pchheader "arborpch.h"
+	pchsource "arborpch.cpp"
 
 	files {
 		"%{prj.location}/**pch.**",
@@ -26,7 +26,7 @@ project "Vol"
 
 	filter "system:Windows"
 		-- Force include the PCH on MSVC
-		buildoptions { "/FI volpch.h" }
+		buildoptions { "/FI arborpch.h" }
 
 		-- Windows only source files
 		files {

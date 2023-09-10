@@ -6,7 +6,7 @@ namespace Win32WindowPrivate
 HINSTANCE HInstance{ nullptr };
 
 // Window class name used for registration purposes
-constexpr wchar_t const* WindowClassName = TEXT("VolDX12");
+constexpr wchar_t const* WindowClassName = TEXT("ArborDX12");
 }
 
 void Win32Window::Init(HINSTANCE HInstance, int NCmdShow, const wchar_t* Title)

@@ -26,7 +26,7 @@ void D3D12Renderer::Render() const
 
 void D3D12Renderer::Destroy() const
 {
-#ifdef VOL_DEBUG
+#ifdef ARBOR_DEBUG
 	// Use the stored debug information to check for 'leaks' reported by Windows
 	{
 		Core::ComPtr<IDXGIDebug1> DxgiDebug;
@@ -42,7 +42,7 @@ void D3D12Renderer::InitPipelines()
 {
 	uint32_t DxgiFactoryFlags = 0;
 
-#ifdef VOL_DEBUG
+#ifdef ARBOR_DEBUG
 	// Enable debug mode for D3D12
 	{
 		ID3D12Debug* DebugController;

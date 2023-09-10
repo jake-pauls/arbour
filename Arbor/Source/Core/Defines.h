@@ -6,7 +6,7 @@
 
 namespace DefinesPrivate
 {
-#ifdef VOL_DEBUG 
+#ifdef ARBOR_DEBUG 
 #ifdef WIN32
 // Size of the buffer allocated to print into Visual Studio's output window
 constexpr int VsPrintSize{ 256 };
@@ -29,7 +29,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 #define __FILE_NAME__ std::filesystem::path(__FILE__).filename().string()
 #define __FILE_NAME_C_STR__ std::filesystem::path(__FILE__).filename().string().c_str()
 
-#ifdef VOL_DEBUG
+#ifdef ARBOR_DEBUG
 	#ifdef WIN32
 		#define DEBUGBREAK() __debugbreak()
 	#else
@@ -40,7 +40,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#define DEBUGBREAK()
 #endif
 
-#ifdef VOL_DEBUG
+#ifdef ARBOR_DEBUG
 	#ifdef WIN32
 		#include <assert.h>
 	#else
@@ -48,7 +48,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#endif
 #endif
 
-#ifdef VOL_DEBUG
+#ifdef ARBOR_DEBUG
 	#ifdef WIN32
 		// todo: find an alternate method with soft buffer maximum
 		#define __VS_PRINT__(Fmt, ...) \
@@ -67,15 +67,15 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#define __LOG_ARGS__(LOG_TAG) LOG_TAG, __FILE_NAME_C_STR__, __FUNCTION__, __LINE__
 	#define __LOG__(Level, Message, ...) __PRINT__(__LOG_FMT__ Message __NEWLINE__, __LOG_ARGS__(Level), ## __VA_ARGS__)
 
-	#define VOL_LOG(Message, ...) __LOG__(DefinesPrivate::LogLevelDebug, Message, __VA_ARGS__)
-	#define VOL_WARNING(Message, ...) __LOG__(DefinesPrivate::LogLevelWarning, Message, __VA_ARGS__)
-	#define VOL_ERROR(Message, ...) __LOG__(DefinesPrivate::LogLevelError, Message, __VA_ARGS__)
+	#define ARBOR_LOG(Message, ...) __LOG__(DefinesPrivate::LogLevelDebug, Message, __VA_ARGS__)
+	#define ARBOR_WARNING(Message, ...) __LOG__(DefinesPrivate::LogLevelWarning, Message, __VA_ARGS__)
+	#define ARBOR_ERROR(Message, ...) __LOG__(DefinesPrivate::LogLevelError, Message, __VA_ARGS__)
 #else
-	#define VOL_LOG(Message, ...) 
-	#define VOL_ERROR(Message, ...)
+	#define ARBOR_LOG(Message, ...) 
+	#define ARBOR_ERROR(Message, ...)
 #endif
 
-#ifdef VOL_DEBUG
+#ifdef ARBOR_DEBUG
 	/**
 	 * Wrapper for a generic platform assert, causes a crashe if provided check is failed.
 	 */
@@ -89,7 +89,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 		[Capture]() -> bool { \
 			if (!(Check)) \
 			{ \
-				VOL_ERROR(Message, ## __VA_ARGS__); DEBUGBREAK(); \
+				ARBOR_ERROR(Message, ## __VA_ARGS__); DEBUGBREAK(); \
 				return false; \
 			} \
 			return true; \

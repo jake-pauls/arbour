@@ -3,7 +3,7 @@ if "%~1" == "/C" goto clean
 
 :gen
 rem Generate solution
-call .\Vol\ThirdParty\premake5.exe vs2022 --file="premake5.lua"
+call .\Arbor\ThirdParty\premake5.exe vs2022 --file="premake5.lua"
 goto :eof
 
 :clean

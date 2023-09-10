@@ -1,7 +1,7 @@
-workspace "vol"
+workspace "arbor"
 	architecture "x64"
 	configurations { "Debug", "Release" }
-	startproject "Vol"
+	startproject "Arbor"
 
     targetdir "%{wks.location}/%{prj.name}/Build/Bin/%{cfg.buildcfg}"
     objdir "%{wks.location}/%{prj.name}/Build/Intermediates/%{cfg.buildcfg}"
@@ -13,14 +13,14 @@ workspace "vol"
 	filter "system:Windows" 
 		defines { "WIN32" }
 	filter "configurations:Debug"
-		defines { "VOL_DEBUG" }
+		defines { "ARBOR_DEBUG" }
 		runtime "Debug"
 		symbols "On"
 	filter "configurations:Release"
-		defines { "VOL_RELEASE" }
+		defines { "ARBOR_RELEASE" }
 		runtime "Release"
 		optimize "On"
 		symbols "Off"
 	filter {}
 
-include "Vol"
+include "Arbor"
