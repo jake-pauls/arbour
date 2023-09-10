@@ -1,0 +1,3 @@
+[submodule "Arbor/ThirdParty/DirectX-Headers"]
+	path = Arbor/ThirdParty/DirectX-Headers
+	url = https://github.com/microsoft/DirectX-Headers.git

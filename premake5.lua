@@ -3,7 +3,7 @@ workspace "arbor"
 	configurations { "Debug", "Release" }
 	startproject "Arbor"
 
-    targetdir "%{wks.location}/%{prj.name}/Build/Bin/%{cfg.buildcfg}"
+    targetdir "%{wks.location}/%{prj.name}/Build/Binaries/%{cfg.buildcfg}"
     objdir "%{wks.location}/%{prj.name}/Build/Intermediates/%{cfg.buildcfg}"
 
 	vpaths { 

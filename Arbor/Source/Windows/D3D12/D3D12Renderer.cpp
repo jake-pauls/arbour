@@ -5,14 +5,8 @@
 
 #ifdef WIN32
 #include <DXGIDebug.h>
+#include <d3dx12.h>
 #endif
-
-namespace D3D12RendererPrivate
-{
-// Dedicated frames to await
-// todo: will other D3D12 structures require this data?
-static constexpr uint32_t FrameCount{ 2 };
-}
 
 void D3D12Renderer::Init()
 {
@@ -87,7 +81,7 @@ void D3D12Renderer::InitPipelines()
 	// Swap Chain
 	{
 		DXGI_SWAP_CHAIN_DESC1 SwapChainDesc = {};
-		SwapChainDesc.BufferCount = D3D12RendererPrivate::FrameCount;
+		SwapChainDesc.BufferCount = FrameCount;
 		SwapChainDesc.Width = CoreStatics::ViewportWidth;
 		SwapChainDesc.Height = CoreStatics::ViewportHeight;
 		SwapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -112,7 +106,7 @@ void D3D12Renderer::InitPipelines()
 		// Describe and create a Render Target View descriptor heap
 		// todo: look into different descriptor heap types
 		D3D12_DESCRIPTOR_HEAP_DESC RtvDescriptorHeapDesc = {};
-		RtvDescriptorHeapDesc.NumDescriptors = D3D12RendererPrivate::FrameCount;
+		RtvDescriptorHeapDesc.NumDescriptors = FrameCount;
 		RtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 		RtvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
@@ -122,6 +116,25 @@ void D3D12Renderer::InitPipelines()
 
 	// todo: add submodule for directx12 helpers before continuing
 	// refer to: https://github.com/microsoft/DirectX-Headers/blob/main/README.md
+
+	// Frame Resources
+	{
+		CD3DX12_CPU_DESCRIPTOR_HANDLE RtvHandle(RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+		// Create an RTV for each frame
+		for (uint32_t Index = 0; Index < FrameCount; ++Index)
+		{
+			DX_CALL(SwapChain->GetBuffer(Index, IID_PPV_ARGS(&RenderTargets[Index])));
+			Device->CreateRenderTargetView(RenderTargets[Index].Get(), nullptr, RtvHandle);
+			RtvHandle.Offset(1, RtvDescriptorHeapSize);
+		}
+	}
+
+	DX_CALL(Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&CommandAllocator)));
+}
+
+void D3D12Renderer::InitAssets()
+{
 }
 
 void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* Factory, IDXGIAdapter1** Adapter, bool bRequestHighPerformanceAdapter) const

@@ -7,8 +7,11 @@ project "Arbor"
 	pchheader "arborpch.h"
 	pchsource "arborpch.cpp"
 
+	-- Arbor ThirdParty Configuration
+	include "ThirdParty/Premake/Config.lua"
+
 	files {
-		"%{prj.location}/**pch.**",
+		"%{prj.location}/*pch.**",
 		"%{prj.location}/Source/Main.cpp",
 		"%{prj.location}/Source/Core/**.h",
 		"%{prj.location}/Source/Core/**.cpp",
@@ -21,10 +24,16 @@ project "Arbor"
 
 	includedirs { 
 		"%{prj.location}/Source",
-		"%{prj.location}"
+		"%{prj.location}",
+		-- ThirdParty Configuration 
+		"%{Config.Package.DirectX_Headers.Include}"
 	}
 
 	filter "system:Windows"
+		defines {
+			"_CRT_SECURE_NO_WARNINGS"
+		}
+
 		-- Force include the PCH on MSVC
 		buildoptions { "/FI arborpch.h" }
 
@@ -38,6 +47,11 @@ project "Arbor"
 			"d3d12", 
 			"dxgi", 
 			"dxguid", -- DXGI_DEBUG flags
-			"d3dcompiler" 
+			"d3dcompiler",
+			"%{Config.Package.DirectX_Headers.Link}"
 		}
+
+		group "ThirdParty"
+			include "ThirdParty/Premake/DirectX-Headers.premake5.lua"
+		group ""
 	filter {}
