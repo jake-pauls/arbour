@@ -51,45 +51,45 @@ constexpr char const* LogLevelError{ "ERROR" };
 #ifdef ARBOR_DEBUG
 	#ifdef WIN32
 		// todo: find an alternate method with soft buffer maximum
-		#define __VS_PRINT__(Fmt, ...) \
+		#define __VS_PRINT__(fmt, ...) \
 		{ \
-			char Str[DefinesPrivate::VsPrintSize]; \
-			sprintf_s(Str, sizeof(Str), Fmt, __VA_ARGS__); \
-			OutputDebugStringA(Str); \
+			char str[DefinesPrivate::VsPrintSize]; \
+			sprintf_s(str, sizeof(str), fmt, __VA_ARGS__); \
+			OutputDebugStringA(str); \
 		} \
 
-		#define __PRINT__(Fmt, ...) fprintf(stdout, Fmt, __VA_ARGS__); __VS_PRINT__(Fmt, __VA_ARGS__)
+		#define __PRINT__(fmt, ...) fprintf(stdout, fmt, __VA_ARGS__); __VS_PRINT__(fmt, __VA_ARGS__)
 	#else
-		#define __PRINT__(Fmt, ...) fprintf(stdout, Fmt, __VA_ARGS__); 
+		#define __PRINT__(fmt, ...) fprintf(stdout, fmt, __VA_ARGS__); 
 	#endif
 
 	#define __LOG_FMT__ "[%-2s | %-2s | %s:%d] "
 	#define __LOG_ARGS__(LOG_TAG) LOG_TAG, __FILE_NAME_C_STR__, __FUNCTION__, __LINE__
-	#define __LOG__(Level, Message, ...) __PRINT__(__LOG_FMT__ Message __NEWLINE__, __LOG_ARGS__(Level), ## __VA_ARGS__)
+	#define __LOG__(level, message, ...) __PRINT__(__LOG_FMT__ message __NEWLINE__, __LOG_ARGS__(level), ## __VA_ARGS__)
 
-	#define ARBOR_LOG(Message, ...) __LOG__(DefinesPrivate::LogLevelDebug, Message, __VA_ARGS__)
-	#define ARBOR_WARNING(Message, ...) __LOG__(DefinesPrivate::LogLevelWarning, Message, __VA_ARGS__)
-	#define ARBOR_ERROR(Message, ...) __LOG__(DefinesPrivate::LogLevelError, Message, __VA_ARGS__)
+	#define ARBOR_LOG(message, ...) __LOG__(DefinesPrivate::LogLevelDebug, message, __VA_ARGS__)
+	#define ARBOR_WARNING(message, ...) __LOG__(DefinesPrivate::LogLevelWarning, message, __VA_ARGS__)
+	#define ARBOR_ERROR(message, ...) __LOG__(DefinesPrivate::LogLevelError, message, __VA_ARGS__)
 #else
-	#define ARBOR_LOG(Message, ...) 
-	#define ARBOR_ERROR(Message, ...)
+	#define ARBOR_LOG(message, ...) 
+	#define ARBOR_ERROR(message, ...)
 #endif
 
 #ifdef ARBOR_DEBUG
 	/**
 	 * Wrapper for a generic platform assert, causes a crashe if provided check is failed.
 	 */
-	#define is(Check) assert(Check)
+	#define is(check) assert(check)
 
 	/**
 	 * Cool trick inspired by how UE tackles boolean-ish assert checking.
 	 * https://github.com/EpicGames/UnrealEngine/blob/release/Engine/Source/Runtime/Core/Public/Misc/AssertionMacros.h
 	 */
-	#define __VERIFY_LAMBDA__(Capture, Check, Message, ...) \
-		[Capture]() -> bool { \
-			if (!(Check)) \
+	#define __VERIFY_LAMBDA__(capture, check, message, ...) \
+		[capture]() -> bool { \
+			if (!(check)) \
 			{ \
-				ARBOR_ERROR(Message, ## __VA_ARGS__); DEBUGBREAK(); \
+				ARBOR_ERROR(message, ## __VA_ARGS__); DEBUGBREAK(); \
 				return false; \
 			} \
 			return true; \
@@ -105,12 +105,12 @@ constexpr char const* LogLevelError{ "ERROR" };
 	 *
 	 * Unlike `is`, `verify` will execute a debug break in debug builds and continue execution of the running program.
 	 */
-	#define verify(Check) __VERIFY_LAMBDA__(, Check, #Check)
+	#define verify(check) __VERIFY_LAMBDA__(, check, #check)
 	/**
 	 * @see verify(...)
 	 */
-	#define verifyf(Check, Message, ...) __VERIFY_LAMBDA__(&, Check, Message, ## __VA_ARGS__)
+	#define verifyf(check, message, ...) __VERIFY_LAMBDA__(&, check, message, ## __VA_ARGS__)
 #else 
-	#define verify(Check) 
-	#define verifyf(Check, Message, ...)
+	#define verify(check) 
+	#define verifyf(check, message, ...)
 #endif 

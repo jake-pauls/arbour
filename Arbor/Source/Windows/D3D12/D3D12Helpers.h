@@ -1,13 +1,13 @@
 #pragma once
 
-#define DX_CALL(HResult) \
+#define DX_CALL(hResult) \
 	{ \
-		if (FAILED(HResult)) \
+		if (FAILED(hResult)) \
 		{ \
 			verifyf(false, "DX_CALL failed, refer to DirectX12 trace for more information."); \
 		} \
 	} \
 
-#define DX_CALL_SUCCEEDED(HResult) SUCCEEDED(HResult)
+#define DX_CALL_SUCCEEDED(hResult) SUCCEEDED(hResult)
 
-#define DX_CALL_FAILED(HResult) FAILED(HResult)
+#define DX_CALL_FAILED(hResult) FAILED(hResult)

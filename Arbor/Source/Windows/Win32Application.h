@@ -8,19 +8,19 @@ public:
 
 	/**
 	 * @brief Starts the Win32Application's runtime.
-	 * @param HInstance Handle for the currently running instance
-	 * @param NCmdShow Display code for the window being spawned
+	 * @param hInstance Handle for the currently running instance
+	 * @param nCmdShow Display code for the window being spawned
 	 */
-	int Run(HINSTANCE HInstance, int NCmdShow) const;
+	int Run(HINSTANCE hInstance, int nCmdShow) const;
 
 	/**
 	 * @brief Retrieves the static window handle saved for this application.
 	*/
 	FORCEINLINE static constexpr const HWND& GetWindowHandle() 
 	{ 
-		return WindowHandle; 
+		return m_WindowHandle; 
 	};
 
 private:
-	static HWND WindowHandle;
+	static HWND m_WindowHandle;
 };

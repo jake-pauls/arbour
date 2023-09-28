@@ -9,60 +9,60 @@ HINSTANCE HInstance{ nullptr };
 constexpr wchar_t const* WindowClassName = TEXT("ArborDX12");
 }
 
-void Win32Window::Init(HINSTANCE HInstance, int NCmdShow, const wchar_t* Title)
+void Win32Window::Init(HINSTANCE hInstance, int nCmdShow, const wchar_t* title)
 {
-	Win32WindowPrivate::HInstance = HInstance;
+	Win32WindowPrivate::HInstance = hInstance;
 
-	WNDCLASS WindowClass = {};
-	WindowClass.lpfnWndProc = WindowProc;
-	WindowClass.hInstance = HInstance;
-	WindowClass.lpszClassName = Win32WindowPrivate::WindowClassName;
+	WNDCLASS windowClass = {};
+	windowClass.lpfnWndProc = WindowProc;
+	windowClass.hInstance = hInstance;
+	windowClass.lpszClassName = Win32WindowPrivate::WindowClassName;
 
-	RegisterClass(&WindowClass);
+	RegisterClass(&windowClass);
 
-	RECT WindowRect = { 0, 0, static_cast<LONG>(CoreStatics::ViewportWidth), static_cast<LONG>(CoreStatics::ViewportHeight) };
-	AdjustWindowRect(&WindowRect, WS_OVERLAPPEDWINDOW, FALSE);
+	RECT windowRect = { 0, 0, static_cast<LONG>(CoreStatics::ViewportWidth), static_cast<LONG>(CoreStatics::ViewportHeight) };
+	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	Hwnd = CreateWindowEx(0, 
+	m_Hwnd = CreateWindowEx(0, 
 		Win32WindowPrivate::WindowClassName, 
-		Title, 
+		title, 
 		WS_OVERLAPPEDWINDOW, 
 		CW_USEDEFAULT, 
 		CW_USEDEFAULT, 
-		WindowRect.right - WindowRect.left, 
-		WindowRect.bottom - WindowRect.top,
+		windowRect.right - windowRect.left, 
+		windowRect.bottom - windowRect.top,
 		NULL,
 		NULL,
-		HInstance,
+		hInstance,
 		NULL);
 
-	is(Hwnd);
-	ShowWindow(Hwnd, NCmdShow);
+	is(m_Hwnd);
+	ShowWindow(m_Hwnd, nCmdShow);
 }
 
-void Win32Window::Peek(LPMSG Msg) const
+void Win32Window::Peek(LPMSG msg) const
 {
-	if (PeekMessage(Msg, NULL, 0, 0, PM_REMOVE))
+	if (PeekMessage(msg, NULL, 0, 0, PM_REMOVE))
 	{
-		TranslateMessage(Msg);
-		DispatchMessage(Msg);
+		TranslateMessage(msg);
+		DispatchMessage(msg);
 	}
 }
 
 void Win32Window::Destroy()
 {
-	DestroyWindow(Hwnd);
-	Hwnd = nullptr;
+	DestroyWindow(m_Hwnd);
+	m_Hwnd = nullptr;
 
 	UnregisterClass(Win32WindowPrivate::WindowClassName, Win32WindowPrivate::HInstance);
 	Win32WindowPrivate::HInstance = nullptr;
 }
 
-LRESULT CALLBACK Win32Window::WindowProc(HWND Hwnd, UINT Message, WPARAM WParam, LPARAM LParam)
+LRESULT CALLBACK Win32Window::WindowProc(HWND m_Hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	is(Hwnd);
+	is(m_Hwnd);
 
-	switch (Message)
+	switch (message)
 	{
 	case WM_CREATE:
 		break;
@@ -76,7 +76,7 @@ LRESULT CALLBACK Win32Window::WindowProc(HWND Hwnd, UINT Message, WPARAM WParam,
 		break;
 	default:
 		// Handle other window events if we don't do anything
-		return DefWindowProc(Hwnd, Message, WParam, LParam);
+		return DefWindowProc(m_Hwnd, message, wParam, lParam);
 	}
 
 	return 0;
