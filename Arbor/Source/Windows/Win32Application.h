@@ -6,16 +6,12 @@ public:
 	Win32Application() = default;
 	~Win32Application() = default;
 
-	/**
-	 * @brief Starts the Win32Application's runtime.
-	 * @param hInstance Handle for the currently running instance
-	 * @param nCmdShow Display code for the window being spawned
-	 */
-	int Run(HINSTANCE hInstance, int nCmdShow) const;
+	/// @brief Starts the Win32Application's runtime.
+	/// @param hInstance Handle for the currently running instance
+	/// @param nCmdShow Display code for the window being spawned
+	i32 Run(HINSTANCE hInstance, i32 nCmdShow) const;
 
-	/**
-	 * @brief Retrieves the static window handle saved for this application.
-	*/
+	/// @brief Retrieves the static window handle saved for this application.
 	FORCEINLINE static constexpr const HWND& GetWindowHandle() 
 	{ 
 		return m_WindowHandle; 

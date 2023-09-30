@@ -5,7 +5,7 @@
 
 HWND Win32Application::m_WindowHandle;
 
-int Win32Application::Run(HINSTANCE hInstance, int nCmdShow) const
+i32 Win32Application::Run(HINSTANCE hInstance, i32 nCmdShow) const
 {
 	Core::UniquePtr<Win32Window> window = Core::MakeUnique<Win32Window>();
 	Core::UniquePtr<D3D12Renderer> renderer = Core::MakeUnique<D3D12Renderer>();
@@ -28,5 +28,5 @@ int Win32Application::Run(HINSTANCE hInstance, int nCmdShow) const
 	renderer->Destroy();
 	renderer = nullptr;
 
-	return static_cast<int>(Msg.wParam);
+	return static_cast<i32>(Msg.wParam);
 }

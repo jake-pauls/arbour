@@ -9,7 +9,7 @@ HINSTANCE HInstance{ nullptr };
 constexpr wchar_t const* WindowClassName = TEXT("ArborDX12");
 }
 
-void Win32Window::Init(HINSTANCE hInstance, int nCmdShow, const wchar_t* title)
+void Win32Window::Init(HINSTANCE hInstance, i32 nCmdShow, const wchar_t* title)
 {
 	Win32WindowPrivate::HInstance = hInstance;
 

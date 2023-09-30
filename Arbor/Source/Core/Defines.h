@@ -76,15 +76,14 @@ constexpr char const* LogLevelError{ "ERROR" };
 #endif
 
 #ifdef ARBOR_DEBUG
-	/**
-	 * Wrapper for a generic platform assert, causes a crashe if provided check is failed.
-	 */
+	/// Wrapper for a generic platform assert, causes a crashe if provided check is failed.
 	#define is(check) assert(check)
 
-	/**
-	 * Cool trick inspired by how UE tackles boolean-ish assert checking.
-	 * https://github.com/EpicGames/UnrealEngine/blob/release/Engine/Source/Runtime/Core/Public/Misc/AssertionMacros.h
-	 */
+	/// Equivalent to `is(false)`, can be used to signify a code path that should have no entry
+	#define isFatal() assert(false)
+
+	/// Cool trick inspired by how UE tackles boolean-ish assert checking.
+	/// https://github.com/EpicGames/UnrealEngine/blob/release/Engine/Source/Runtime/Core/Public/Misc/AssertionMacros.h
 	#define __VERIFY_LAMBDA__(capture, check, message, ...) \
 		[capture]() -> bool { \
 			if (!(check)) \
@@ -95,20 +94,19 @@ constexpr char const* LogLevelError{ "ERROR" };
 			return true; \
 		}() \
 
-	/**
-	 * Similar to `ensure` in UE, `verify` permits conditioning to check if an assert is true.
-	 * 
-	 *		if (verify(Object.BoolProperty))
-	 *      {
-	 *			// Do something with this object's bool property
-	 *      }
-	 *
-	 * Unlike `is`, `verify` will execute a debug break in debug builds and continue execution of the running program.
-	 */
+	///
+	/// Similar to `ensure` in UE, `verify` permits conditioning to check if an assert is true.
+	/// 
+	///		if (verify(Object.BoolProperty))
+	///     {
+	///			// Do something with this object's bool property
+	///     }
+	///
+	/// Unlike `is`, `verify` will execute a debug break in debug builds and continue execution of the running program.
+	///
 	#define verify(check) __VERIFY_LAMBDA__(, check, #check)
-	/**
-	 * @see verify(...)
-	 */
+	
+	/// @see verify(...)
 	#define verifyf(check, message, ...) __VERIFY_LAMBDA__(&, check, message, ## __VA_ARGS__)
 #else 
 	#define verify(check) 

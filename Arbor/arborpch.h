@@ -10,6 +10,8 @@
 #endif
 
 // Core
+// todo: Abstract these out to a single CorePCH file
 #include "Core/Core.h"
 #include "Core/CoreStatics.h"
+#include "Core/CoreTypes.h"
 #include "Core/Defines.h"
