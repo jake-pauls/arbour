@@ -55,6 +55,8 @@ private:
 	Core::ComPtr<ID3D12CommandAllocator> m_CommandAllocator{ nullptr };
 	Core::ComPtr<ID3D12GraphicsCommandList> m_CommandList{ nullptr };
 
+	Core::ComPtr<IDXGIFactory4> m_Factory{ nullptr };
+
 	Core::ComPtr<ID3D12DescriptorHeap> m_RtvDescriptorHeap{ nullptr };
 	u32 m_RtvDescriptorHeapSize{ 0 };
 

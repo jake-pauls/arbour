@@ -48,4 +48,4 @@ constexpr SharedPtr<Type> MakeShared(ArgTypes... args)
 template<typename Type>
 using ComPtr = Microsoft::WRL::ComPtr<Type>;
 #endif
-}
+}	// Core

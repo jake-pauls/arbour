@@ -7,10 +7,36 @@
 #include <d3dx12.h>
 #include <iterator>
 
+namespace D3D12RendererPrivate
+{
+// Sets the target API level for Direct3D
+static constexpr D3D_FEATURE_LEVEL DirectXFeatureLevel{ D3D_FEATURE_LEVEL_12_0 };
+
+// Flip this switch to enable the Windows Advanced Rasterization Platform (WARP)
+// For more information, refer to: https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp
+static constexpr bool bUseWarpAdapter{ true };
+
+#ifdef ARBOR_DEBUG
+void ReportLiveObjects() 
+{
+	ARBOR_LOG("Querying DirectX for remaining live objects.");
+	Core::ComPtr<IDXGIDebug1> dxgiDebug;
+	if (DX_CALL_SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug))))
+	{
+		dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+	}
+}
+#endif
+}	// D3D12RendererPrivate
+
 D3D12Renderer::D3D12Renderer()
 	: m_Viewport(0.f, 0.f, static_cast<float>(CoreStatics::ViewportWidth), static_cast<float>(CoreStatics::ViewportHeight))
 	, m_ScissorRect(0, 0, static_cast<long>(CoreStatics::ViewportWidth), static_cast<long>(CoreStatics::ViewportHeight))
 {
+#ifdef ARBOR_DEBUG
+	// Debug hook to query DirectX for remaining live objects on destruction
+	std::atexit(D3D12RendererPrivate::ReportLiveObjects);
+#endif
 }
 
 void D3D12Renderer::Init()
@@ -34,17 +60,6 @@ void D3D12Renderer::Render()
 
 void D3D12Renderer::Destroy() 
 {
-#ifdef ARBOR_DEBUG
-	// Use the stored debug information to check for 'leaks' reported by Windows
-	{
-		Core::ComPtr<IDXGIDebug1> dxgiDebug;
-		if (DX_CALL_SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug))))
-		{
-			dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
-		}
-	}
-#endif
-
 	WaitForPreviousFrame();
 
 	CloseHandle(m_FenceEvent);
@@ -74,16 +89,24 @@ void D3D12Renderer::InitPipelines()
 #endif
 
 	// Factory
-	Core::ComPtr<IDXGIFactory4> factory;
-	DX_CALL(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)));
+	DX_CALL(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&m_Factory)));
 
 	// Device
 	// todo: add warp adapter? 
 	// https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp
+	if (D3D12RendererPrivate::bUseWarpAdapter)
+	{
+		Core::ComPtr<IDXGIAdapter> warpAdapter;
+		DX_CALL(m_Factory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
+		is(warpAdapter);
+		DX_CALL(D3D12CreateDevice(warpAdapter.Get(), D3D12RendererPrivate::DirectXFeatureLevel, IID_PPV_ARGS(&m_Device)));
+	}
+	else
 	{
 		Core::ComPtr<IDXGIAdapter1> hardwareAdapter;
-		GetHardwareAdapter(factory.Get(), &hardwareAdapter);
-		DX_CALL(D3D12CreateDevice(hardwareAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device)));
+		GetHardwareAdapter(m_Factory.Get(), &hardwareAdapter);
+		is(hardwareAdapter);
+		DX_CALL(D3D12CreateDevice(hardwareAdapter.Get(), D3D12RendererPrivate::DirectXFeatureLevel, IID_PPV_ARGS(&m_Device)));
 		is(m_Device);
 	}
 
@@ -109,14 +132,15 @@ void D3D12Renderer::InitPipelines()
 
 		Core::ComPtr<IDXGISwapChain1> swapChain;
 		// Creating a swap chain flushes the command queue
-		DX_CALL(factory->CreateSwapChainForHwnd(m_CommandQueue.Get(), Win32Application::GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain));
+		DX_CALL(m_Factory->CreateSwapChainForHwnd(m_CommandQueue.Get(), Win32Application::GetWindowHandle(), &swapChainDesc, nullptr, nullptr, &swapChain));
 
 		// Disable use of Alt+Enter for fullscreen transitions
-		DX_CALL(factory->MakeWindowAssociation(Win32Application::GetWindowHandle(), DXGI_MWA_NO_ALT_ENTER));
+		DX_CALL(m_Factory->MakeWindowAssociation(Win32Application::GetWindowHandle(), DXGI_MWA_NO_ALT_ENTER));
 
 		// todo: why do we reassign this to the heap one, instead of just allocating it there in the first place?
 		DX_CALL(swapChain.As(&m_SwapChain));
 		m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
+		is(m_SwapChain);
 	}
 
 	// Descriptor Heaps
@@ -130,6 +154,7 @@ void D3D12Renderer::InitPipelines()
 
 		DX_CALL(m_Device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, IID_PPV_ARGS(&m_RtvDescriptorHeap)));
 		m_RtvDescriptorHeapSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		is(m_RtvDescriptorHeap);
 	}
 
 	// Frame Resources
@@ -159,6 +184,7 @@ void D3D12Renderer::InitResources()
 		Core::ComPtr<ID3DBlob> error;
 		DX_CALL(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
 		DX_CALL(m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature)));
+		is(m_RootSignature);
 	}
 
 	// Pipeline State - also, compiling/loading shaders
@@ -199,6 +225,7 @@ void D3D12Renderer::InitResources()
 		psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		psoDesc.SampleDesc.Count = 1;
 		DX_CALL(m_Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PipelineState)));
+		is(m_PipelineState);
 	}
 
 	// Command List
@@ -286,7 +313,7 @@ void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* factory, IDXGIAdapter1** a
 			}
 
 			// Check to see if the device supports Direct3D 12
-			if (DX_CALL_SUCCEEDED(D3D12CreateDevice(adapter1.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+			if (DX_CALL_SUCCEEDED(D3D12CreateDevice(adapter1.Get(), D3D12RendererPrivate::DirectXFeatureLevel, _uuidof(ID3D12Device), nullptr)))
 			{
 				break;
 			}
@@ -308,7 +335,7 @@ void D3D12Renderer::GetHardwareAdapter(IDXGIFactory1* factory, IDXGIAdapter1** a
 			}
 
 			// Check to see if the device supports Direct3D 12
-			if (DX_CALL_SUCCEEDED(D3D12CreateDevice(adapter1.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+			if (DX_CALL_SUCCEEDED(D3D12CreateDevice(adapter1.Get(), D3D12RendererPrivate::DirectXFeatureLevel, _uuidof(ID3D12Device), nullptr)))
 			{
 				break;
 			}

@@ -12,4 +12,4 @@ constexpr static u16 ViewportHeight{ 600 };
 
 // Starting aspect ratio of the viewport
 constexpr static float ViewportAspectRatio{ static_cast<float>(ViewportWidth) / static_cast<float>(ViewportHeight) };
-}
+}	// CoreStatics

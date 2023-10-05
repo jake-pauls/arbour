@@ -22,11 +22,8 @@ i32 Win32Application::Run(HINSTANCE hInstance, i32 nCmdShow) const
 		renderer->Render();
 	}
 
-	window->Destroy();
-	window = nullptr;
-
 	renderer->Destroy();
-	renderer = nullptr;
+	window->Destroy();
 
 	return static_cast<i32>(Msg.wParam);
 }
