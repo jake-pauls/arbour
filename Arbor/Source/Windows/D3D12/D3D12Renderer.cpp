@@ -10,11 +10,11 @@
 namespace D3D12RendererPrivate
 {
 // Sets the target API level for Direct3D
-static constexpr D3D_FEATURE_LEVEL DirectXFeatureLevel{ D3D_FEATURE_LEVEL_12_0 };
+constexpr static D3D_FEATURE_LEVEL DirectXFeatureLevel{ D3D_FEATURE_LEVEL_12_0 };
 
 // Flip this switch to enable the Windows Advanced Rasterization Platform (WARP)
 // For more information, refer to: https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp
-static constexpr bool bUseWarpAdapter{ true };
+constexpr static bool bUseWarpAdapter{ true };
 
 #ifdef ARBOR_DEBUG
 void ReportLiveObjects() 
@@ -92,8 +92,6 @@ void D3D12Renderer::InitPipelines()
 	DX_CALL(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&m_Factory)));
 
 	// Device
-	// todo: add warp adapter? 
-	// https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp
 	if (D3D12RendererPrivate::bUseWarpAdapter)
 	{
 		Core::ComPtr<IDXGIAdapter> warpAdapter;
