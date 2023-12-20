@@ -6,7 +6,7 @@
 
 namespace DefinesPrivate
 {
-#ifdef ARBOR_DEBUG 
+#ifdef ARBOUR_DEBUG 
 #ifdef WIN32
 // Size of the buffer allocated to print into Visual Studio's output window
 constexpr int VsPrintSize{ 256 };
@@ -29,7 +29,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 #define __FILE_NAME__ std::filesystem::path(__FILE__).filename().string()
 #define __FILE_NAME_C_STR__ std::filesystem::path(__FILE__).filename().string().c_str()
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 	#ifdef WIN32
 		#define DEBUGBREAK() __debugbreak()
 	#else
@@ -40,7 +40,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#define DEBUGBREAK()
 #endif
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 	#ifdef WIN32
 		#include <assert.h>
 	#else
@@ -48,7 +48,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#endif
 #endif
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 	#ifdef WIN32
 		// todo: find an alternate method with soft buffer maximum
 		#define __VS_PRINT__(fmt, ...) \
@@ -67,15 +67,15 @@ constexpr char const* LogLevelError{ "ERROR" };
 	#define __LOG_ARGS__(LOG_TAG) LOG_TAG, __FILE_NAME_C_STR__, __FUNCTION__, __LINE__
 	#define __LOG__(level, message, ...) __PRINT__(__LOG_FMT__ message __NEWLINE__, __LOG_ARGS__(level), ## __VA_ARGS__)
 
-	#define ARBOR_LOG(message, ...) __LOG__(DefinesPrivate::LogLevelDebug, message, __VA_ARGS__)
-	#define ARBOR_WARNING(message, ...) __LOG__(DefinesPrivate::LogLevelWarning, message, __VA_ARGS__)
-	#define ARBOR_ERROR(message, ...) __LOG__(DefinesPrivate::LogLevelError, message, __VA_ARGS__)
+	#define ARBOUR_LOG(message, ...) __LOG__(DefinesPrivate::LogLevelDebug, message, __VA_ARGS__)
+	#define ARBOUR_WARNING(message, ...) __LOG__(DefinesPrivate::LogLevelWarning, message, __VA_ARGS__)
+	#define ARBOUR_ERROR(message, ...) __LOG__(DefinesPrivate::LogLevelError, message, __VA_ARGS__)
 #else
-	#define ARBOR_LOG(message, ...) 
-	#define ARBOR_ERROR(message, ...)
+	#define ARBOUR_LOG(message, ...) 
+	#define ARBOUR_ERROR(message, ...)
 #endif
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 	/// Wrapper for a generic platform assert, causes a crashe if provided check is failed.
 	#define is(check) assert(check)
 
@@ -88,7 +88,7 @@ constexpr char const* LogLevelError{ "ERROR" };
 		[capture]() -> bool { \
 			if (!(check)) \
 			{ \
-				ARBOR_ERROR(message, ## __VA_ARGS__); DEBUGBREAK(); \
+				ARBOUR_ERROR(message, ## __VA_ARGS__); DEBUGBREAK(); \
 				return false; \
 			} \
 			return true; \

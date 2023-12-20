@@ -16,10 +16,10 @@ constexpr static D3D_FEATURE_LEVEL DirectXFeatureLevel{ D3D_FEATURE_LEVEL_12_0 }
 // For more information, refer to: https://learn.microsoft.com/en-us/windows/win32/direct3darticles/directx-warp
 constexpr static bool bUseWarpAdapter{ true };
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 void ReportLiveObjects() 
 {
-	ARBOR_LOG("Querying DirectX for remaining live objects.");
+	ARBOUR_LOG("Querying DirectX for remaining live objects.");
 	Core::ComPtr<IDXGIDebug1> dxgiDebug;
 	if (DX_CALL_SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug))))
 	{
@@ -33,7 +33,7 @@ D3D12Renderer::D3D12Renderer()
 	: m_Viewport(0.f, 0.f, static_cast<float>(CoreStatics::ViewportWidth), static_cast<float>(CoreStatics::ViewportHeight))
 	, m_ScissorRect(0, 0, static_cast<long>(CoreStatics::ViewportWidth), static_cast<long>(CoreStatics::ViewportHeight))
 {
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 	// Debug hook to query DirectX for remaining live objects on destruction
 	std::atexit(D3D12RendererPrivate::ReportLiveObjects);
 #endif
@@ -69,7 +69,7 @@ void D3D12Renderer::InitPipelines()
 {
 	u32 dxgiFactoryFlags = 0;
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 	// Enable debug mode for D3D12
 	{
 		ID3D12Debug* debugController;
@@ -190,7 +190,7 @@ void D3D12Renderer::InitResources()
 		Core::ComPtr<ID3DBlob> vertexShader;
 		Core::ComPtr<ID3DBlob> pixelShader;
 
-#ifdef ARBOR_DEBUG
+#ifdef ARBOUR_DEBUG
 		u32 compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
 		u32 compileFlags = 0;

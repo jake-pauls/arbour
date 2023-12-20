@@ -4,8 +4,8 @@ project "DirectX-Headers"
     staticruntime "On"
     architecture "x86_64"
 
-    targetdir "%{wks.location}/Arbor/ThirdParty/Build/Binaries/%{prj.name}"
-    objdir "%{wks.location}/Arbor/ThirdParty/Build/Intermediates/%{prj.name}"
+    targetdir "%{wks.location}/Arbour/ThirdParty/Build/Binaries/%{prj.name}"
+    objdir "%{wks.location}/Arbour/ThirdParty/Build/Intermediates/%{prj.name}"
 
     files {
         "../%{prj.name}/src/**.cpp"

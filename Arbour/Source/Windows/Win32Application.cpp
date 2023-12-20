@@ -10,7 +10,7 @@ i32 Win32Application::Run(HINSTANCE hInstance, i32 nCmdShow) const
 	Core::UniquePtr<Win32Window> window = Core::MakeUnique<Win32Window>();
 	Core::UniquePtr<D3D12Renderer> renderer = Core::MakeUnique<D3D12Renderer>();
 
-	window->Init(hInstance, nCmdShow, TEXT("arbor - DirectX12"));
+	window->Init(hInstance, nCmdShow, TEXT("arbour - DirectX12"));
 	m_WindowHandle = window->GetHWND();
 
 	renderer->Init();

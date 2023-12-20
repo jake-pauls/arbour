@@ -1,13 +1,13 @@
-project "Arbor"
+project "Arbour"
 	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++20"
-	location "%{wks.location}/Arbor"
+	location "%{wks.location}/Arbour"
 
-	pchheader "arborpch.h"
-	pchsource "arborpch.cpp"
+	pchheader "arbourpch.h"
+	pchsource "arbourpch.cpp"
 
-	-- Arbor ThirdParty Configuration
+	-- Arbour ThirdParty Configuration
 	include "ThirdParty/Premake/Config.lua"
 
 	files {
@@ -35,7 +35,7 @@ project "Arbor"
 		}
 
 		-- Force include the PCH on MSVC
-		buildoptions { "/FI arborpch.h" }
+		buildoptions { "/FI arbourpch.h" }
 
 		-- Windows only source files
 		files {
